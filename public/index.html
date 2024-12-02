@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>abençoa senhor</title>
+  <link rel="icon" type="image/png" href="https://media.tenor.com/47s9fHw46MUAAAAM/num1.gif">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Agenda Alunos</h1>
+
+  <button id="searchButton" onclick="showTable()">
+    <span class="icon">🔍</span> Pesquisar
+  </button>
+
+  <table id="studentTable" style="display: none;">
+    <thead>
+      <tr>
+        <th>R.A</th>
+        <th>Nome</th>
+        <th>Nascimento</th>
+        <th>Idade</th>
+        <th>CPF</th>
+      </tr>
+    </thead>
+    <tbody id="studentData"></tbody>
+  </table>
+
+  <script>
+    function showTable() {
+      document.getElementById('studentTable').style.display = 'table';
+    }
+
+    async function loadStudents() {
+      try {
+        const response = await fetch('/api/alunos'); // Requisição para o servidor
+        if (!response.ok) throw new Error('Erro ao buscar alunos');
+
+        const alunos = await response.json();
+
+        const tbody = document.getElementById('studentData');
+        tbody.innerHTML = ''; // Limpa os dados antigos, se houver
+
+        alunos.forEach(aluno => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${aluno.ra}</td>
+            <td>${aluno.nome}</td>
+            <td>${new Date(aluno.nascimento).toLocaleDateString()}</td>
+            <td>${aluno.idade} anos</td>
+            <td>${aluno.cpf}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        console.error('Erro ao carregar os alunos:', err);
+      }
+    }
+
+    // Carrega os alunos quando a página for carregada
+    window.onload = loadStudents;
+  </script>
+
+  <footer>
+    <p>&copy;Renan Sena👍</p>
+  </footer>
+</body>
+</html>
